@@ -1,117 +1,138 @@
-import pygame
-import random
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Çanta Mağazası</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
 
-# Ekran boyutları
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-BLOCK_SIZE = 30
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
 
-# Renkler
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
+        header {
+            background: #333;
+            color: #fff;
+            padding-top: 30px;
+            min-height: 70px;
+            border-bottom: #0071dc 3px solid;
+        }
 
-# Şekiller ve renkleri
-SHAPES = [
-    [[1, 1, 1],
-     [0, 1, 0]],
+        header h1 {
+            text-align: center;
+        }
 
-    [[0, 2, 2],
-     [2, 2, 0]],
+        nav {
+            float: left;
+            width: 30%;
+            text-align: center;
+            margin-top: 20px;
+        }
 
-    [[3, 3],
-     [3, 3]],
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
 
-    [[0, 0, 0, 0],
-     [4, 4, 4, 4],
-     [0, 0, 0, 0]],
+        nav ul li {
+            display: inline-block;
+            margin-right: 20px;
+        }
 
-    [[0, 5, 0],
-     [5, 5, 5],
-     [0, 0, 0]],
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+        }
 
-    [[0, 6, 6],
-     [6, 6, 0],
-     [0, 0, 0]],
+        .product-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
 
-    [[7, 0, 0],
-     [7, 7, 7],
-     [0, 0, 0]]
-]
+        .product-card {
+            width: 300px;
+            background: #fff;
+            margin: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
 
-SHAPES_COLORS = [RED, GREEN, BLUE, WHITE, BLACK, (255, 165, 0), (128, 0, 128)]
+        .product-card img {
+            width: 100%;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
 
-# Oyun alanı oluştur
-def create_grid(locked_positions={}):
-    grid = [[BLACK for _ in range(10)] for _ in range(20)]
+        .product-info {
+            padding: 10px;
+        }
 
-    for i in range(len(grid)):
-        for j in range(len(grid[i])):
-            if (j, i) in locked_positions:
-                c = locked_positions[(j, i)]
-                grid[i][j] = c
-    return grid
+        .product-info h3 {
+            margin: 5px 0;
+        }
 
-# Şekil oluştur
-def create_shape():
-    return random.choice(SHAPES)
+        .product-info p {
+            font-size: 14px;
+        }
 
-# Şekil hareketi
-def draw_shape(surface, shape, grid):
-    for i in range(len(shape)):
-        for j in range(len(shape[i])):
-            if shape[i][j] != 0:
-                pygame.draw.rect(surface, SHAPES_COLORS[shape[i][j] - 1],
-                                 (j * BLOCK_SIZE, i * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
-                pygame.draw.rect(surface, BLACK,
-                                 (j * BLOCK_SIZE, i * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 1)
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Çanta Mağazası</h1>
+            <nav>
+                <ul>
+                    <li><a href="#">Kadın Çantaları</a></li>
+                    <li><a href="#">Erkek Çantaları</a></li>
+                    <li><a href="#">Çocuk Çantaları</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
-# Main fonksiyon
-def main():
-    pygame.init()
+    <div class="container product-container">
+        <div class="product-card">
+            <img src="bag1.jpg" alt="Çanta 1">
+            <div class="product-info">
+                <h3>Çanta 1</h3>
+                <p>Fiyat: $50</p>
+                <button>Sepete Ekle</button>
+            </div>
+        </div>
+        <div class="product-card">
+            <img src="bag2.jpg" alt="Çanta 2">
+            <div class="product-info">
+                <h3>Çanta 2</h3>
+                <p>Fiyat: $40</p>
+                <button>Sepete Ekle</button>
+            </div>
+        </div>
+        <!-- Diğer çanta kartları buraya eklenebilir -->
+    </div>
 
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    pygame.display.set_caption("Tetris")
-
-    clock = pygame.time.Clock()
-    fall_time = 0
-    locked_positions = {}
-    grid = create_grid(locked_positions)
-    current_shape = create_shape()
-    change_piece = False
-    run = True
-
-    while run:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
-
-        # Şekil hareketi
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
-            current_shape.x -= 1
-        if keys[pygame.K_RIGHT]:
-            current_shape.x += 1
-        if keys[pygame.K_DOWN]:
-            current_shape.y += 1
-
-        fall_time += clock.get_rawtime()
-        clock.tick()
-
-        # Şeklin düşmesi
-        if fall_time > 1000:
-            fall_time = 0
-            current_shape.y += 1
-
-        # Çizim işlemleri
-        screen.fill(BLACK)
-        draw_shape(screen, current_shape, grid)
-
-        pygame.display.update()
-
-    pygame.quit()
-
-if __name__ == "__main__":
-    main()
+    <footer>
+        <p>Çanta Mağazası &copy; 2024</p>
+    </footer>
+</body>
+</html>
